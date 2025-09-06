@@ -1,0 +1,42 @@
+name: Code Quality Checks
+
+on:
+  push:
+    branches-ignore:
+      - "main"
+
+jobs:
+  lint:
+    name: Check code linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python and UV
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: latest
+          enable-cache: true
+          activate-environment: true
+          python-version: "3.11"
+      - name: Install Dependencies
+        run: uv sync --all-extras
+      - name: Check style with ruff
+        run: uv run ruff check tests src
+  test:
+    name: Execute code testing
+    needs:
+      - lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python and UV
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: latest
+          enable-cache: true
+          activate-environment: true
+          python-version: "3.11"
+      - name: Install Dependencies
+        run: uv sync --all-extras
+      - name: Unit & Coverage test
+        run: uv run pytest && uv run codecov

@@ -1,0 +1,59 @@
+[project]
+name = "ssp"
+version = "0.1.0"
+description = "Simple template for serverless projects"
+authors = [{ name = "Erick G. Islas-Osuna", email = "erickisos653@gmail.com" }]
+requires-python = ">=3.11.0,<4"
+readme = "README.md"
+license = "GPL-3.0"
+dependencies = [
+    "pydantic>=2.11.7,<3",
+    "aws-xray-sdk>=2.11.0,<3",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17.1,<2",
+    "bandit>=1.8.0,<2",
+    "pytest>=8.4.1,<9",
+    "pre-commit>=4.0.1,<5",
+    "hypothesis>=6.137.1,<7",
+    "codecov>=2.1.13,<3",
+    "aws-sam-cli>=1.142.1,<2",
+    "ruff>=0.12.12",
+]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/ssp"]
+
+[tool.hatch.build.targets.wheel]
+include = ["src/ssp"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/ssp" = "ssp"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.black]
+line-length = 79
+skip-string-normalization = true
+target-version = ['py311']
+preview = true
+exclude = '''
+/(
+    /.git
+  | /.mypy_cache
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+ignore_missing_imports = true
+plugins = "pydantic.mypy"

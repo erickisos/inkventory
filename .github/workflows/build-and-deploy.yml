@@ -1,0 +1,48 @@
+name: Build and deploy
+
+on:
+  push:
+    branches:
+      - "main"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  build:
+    # Deberías activar este workflow para poder hacer el deploy
+    if: false
+    name: Build the main package and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python and UV
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: latest
+          enable-cache: true
+          activate-environment: true
+          python-version: "3.11"
+      - name: Install Dependencies
+        run: uv sync --all-extras
+      - uses: aws-actions/setup-sam@v2
+      - uses: aws-actions/configure-aws-credentials@v5
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Generate requirements.txt file
+        run: uv export --format requirements.txt > requirements.txt
+      - name: Create layer directory
+        run: mkdir -p dist/python/
+      - name: Install dependencies
+        run: pip install . -t dist/python/
+      - run: sam build --use-container
+      - run: |
+          sam deploy --no-confirm-changeset \
+                     --no-fail-on-empty-changeset \
+                     --stack-name ${{ secrets.AWS_STACK_NAME }} \
+                     --s3-bucket ${{ secrets.AWS_SAM_BUCKET }} \
+                     --s3-prefix ${{ secrets.AWS_STACK_NAME }} \
+                     --capabilities CAPABILITY_IAM \
+                     --region us-east-1
