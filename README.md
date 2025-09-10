@@ -1,8 +1,6 @@
-# Simple Serverless Project
+# Inkventory
 
-Esta "Github Template" te permitirá generar un proyecto serverless sencillo utilizando Python, AWS SAM y Github Actions (CI/CD).
-Por default, está diseñada utilizando la estructura de un proyecto python con Poetry, y toma ventaja de las herramientas como AWS Lambda Layers para reducir la cantidad de código inicial necesario para conectarlo con la plataforma.
-
+Esta es una aplicación para llevar el inventario de material, registro de citas y lo necesario para hacer un inventario en el estudio.
 
 ## Cómo usar esta plantilla?
 
