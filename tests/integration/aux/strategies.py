@@ -3,7 +3,7 @@ import json
 from hypothesis.strategies import composite, from_type
 from pydantic.json import pydantic_encoder
 
-from ssp.schema.aws import LambdaApiRequest
+from inkventory.infrastructure.schema.aws import LambdaApiRequest
 
 
 @composite
